@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Réserver un detailing</title>
+  <style>
+    :root {
+      --accent: #E11D48;
+      --ink: #111827;
+      --muted: #6B7280;
+      --line: #E5E7EB;
+      --soft: #F8FAFC;
+      --paper: #FFFFFF;
+      --ok: #166534;
+      --warn: #92400E;
+      --danger: #B91C1C;
+      --shadow: 0 16px 50px rgba(17, 24, 39, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 10%, transparent), transparent 32rem),
+        #F4F6F8;
+    }
+
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .shell {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0B1020 0%, #111827 72%, #1F2937 100%);
+      color: #fff;
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -90px;
+      top: -110px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: .19;
+      filter: blur(1px);
+    }
+
+    .brand-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .logo {
+      flex: 0 0 54px;
+      width: 54px;
+      height: 54px;
+      border-radius: 17px;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      letter-spacing: -1px;
+      background: var(--accent);
+      box-shadow: 0 10px 28px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #D1D5DB;
+    }
+
+    .hero h1 {
+      margin: 4px 0 4px;
+      font-size: clamp(28px, 5vw, 46px);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #CBD5E1;
+      max-width: 760px;
+      line-height: 1.55;
+    }
+
+    .hero-meta {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .pill {
+      border: 1px solid rgba(255,255,255,.13);
+      background: rgba(255,255,255,.07);
+      color: #F8FAFC;
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 22px;
+      align-items: start;
+      margin-top: 22px;
+    }
+
+    .panel {
+      background: var(--paper);
+      border: 1px solid rgba(17,24,39,.06);
+      border-radius: 24px;
+      box-shadow: 0 10px 34px rgba(17,24,39,.06);
+    }
+
+    .form-panel { padding: 26px; }
+
+    .section + .section {
+      border-top: 1px solid var(--line);
+      margin-top: 28px;
+      padding-top: 28px;
+    }
+
+    .section-title {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: #111827;
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .section h2 {
+      margin: 1px 0 3px;
+      font-size: 19px;
+      letter-spacing: -.02em;
+    }
+
+    .section-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .type-tabs {
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      padding: 5px;
+      background: #F3F4F6;
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+
+    .type-tab {
+      border: 0;
+      background: transparent;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: 10px;
+      font-weight: 800;
+      color: #6B7280;
+    }
+
+    .type-tab.active {
+      background: white;
+      color: var(--ink);
+      box-shadow: 0 3px 12px rgba(17,24,39,.08);
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .service-card {
+      appearance: none;
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 178px;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .service-card:hover { transform: translateY(-1px); }
+    .service-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 13%, transparent);
+    }
+
+    .service-name { font-weight: 900; font-size: 16px; }
+    .service-meta { color: var(--muted); font-size: 13px; margin-top: 5px; }
+    .service-price { margin-top: 14px; font-size: 21px; font-weight: 950; letter-spacing: -.03em; }
+
+    .service-topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .service-badge {
+      flex: 0 0 auto;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: #F3F4F6;
+      color: #4B5563;
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .service-card.selected .service-badge {
+      background: color-mix(in srgb, var(--accent) 11%, white);
+      color: var(--accent);
+    }
+    .service-tagline {
+      margin-top: 9px;
+      color: #4B5563;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .service-included {
+      margin: 13px 0 0;
+      padding: 12px 0 0;
+      border-top: 1px solid var(--line);
+      list-style: none;
+      display: grid;
+      gap: 7px;
+    }
+    .service-included li {
+      position: relative;
+      padding-left: 20px;
+      color: #374151;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .service-included li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #059669;
+      font-weight: 950;
+    }
+    .service-more {
+      margin-top: 10px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .service-card:not(.selected) .service-included li:nth-child(n+4) {
+      display: none;
+    }
+    .service-card.selected .service-more { display: none; }
+
+    .options-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .options-title-row strong { font-size: 14px; }
+    .options-title-row span { color: var(--muted); font-size: 12px; }
+
+    .options-grid { display: grid; gap: 10px; }
+    .regular-block { margin-top:20px; padding:16px; border:1px solid var(--line); border-radius:16px; background:#0F141A; }
+    .regular-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px; }
+    .regular-head strong { font-size:15px; }
+    .regular-head span { color:var(--muted); font-size:12px; text-align:right; }
+    .regular-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .regular-choice { border:1px solid var(--line); border-radius:13px; padding:11px 9px; background:#151B22; color:var(--text); text-align:center; cursor:pointer; }
+    .regular-choice strong { display:block; font-size:13px; }
+    .regular-choice small { display:block; color:var(--muted); margin-top:4px; }
+    .regular-choice.selected { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; background:#211416; }
+    .regular-note { color:var(--muted); font-size:12px; line-height:1.45; margin:10px 0 0; }
+
+    .option-row {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      gap: 11px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 13px;
+      background: white;
+    }
+    .option-row input[type="checkbox"] {
+      width: 19px;
+      min-width: 19px;
+      max-width: 19px;
+      height: 19px;
+      min-height: 19px;
+      padding: 0;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+    .option-row > div:nth-child(2) { min-width: 0; }
+    .option-name { font-weight: 750; }
+    .option-sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .option-price { font-weight: 850; white-space: nowrap; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #374151;
+    }
+
+    input, textarea {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid #D1D5DB;
+      border-radius: 12px;
+      padding: 11px 12px;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+      font-size: 16px;
+    }
+    textarea { resize: vertical; min-height: 96px; line-height: 1.45; }
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+    }
+
+    .date-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .secondary-btn, .primary-btn {
+      min-height: 46px;
+      border-radius: 12px;
+      border: 0;
+      padding: 0 16px;
+      font-weight: 900;
+    }
+    .secondary-btn { background: #111827; color: #fff; }
+    .primary-btn {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      min-height: 52px;
+      font-size: 16px;
+      box-shadow: 0 10px 22px color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+    .primary-btn:disabled, .secondary-btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+
+    .slots {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 14px;
+    }
+    .slot {
+      min-height: 46px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      font-weight: 850;
+      color: #374151;
+    }
+    .slot.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .helper {
+      margin-top: 10px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      background: #F8FAFC;
+      color: #64748B;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .error {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .error.show { display: block; }
+
+    .summary {
+      position: sticky;
+      top: 18px;
+      padding: 20px;
+    }
+    .summary h3 { margin: 0 0 14px; font-size: 17px; }
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .summary-line span:first-child { color: var(--muted); }
+    .summary-line strong { text-align: right; }
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding-top: 17px;
+    }
+    .summary-total .price { font-size: 28px; font-weight: 950; letter-spacing: -.04em; }
+    .summary-total .duration { color: var(--muted); font-size: 13px; }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      align-items: start;
+      margin: 18px 0;
+      color: #4B5563;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .check-row input { width: 18px; height: 18px; min-height: auto; margin-top: 1px; accent-color: var(--accent); }
+
+    .contact {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .loading {
+      display: grid;
+      place-items: center;
+      min-height: 340px;
+      color: var(--muted);
+    }
+    .spinner {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 3px solid #E5E7EB;
+      border-top-color: var(--accent);
+      animation: spin .8s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .closed, .success {
+      margin-top: 22px;
+      padding: 28px;
+      text-align: center;
+    }
+    .state-icon {
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 16px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      background: #F3F4F6;
+      font-size: 28px;
+    }
+    .success .state-icon { background: #ECFDF5; }
+    .closed h2, .success h2 { margin: 0 0 8px; font-size: 25px; }
+    .closed p, .success p { margin: 0 auto; max-width: 650px; color: var(--muted); line-height: 1.55; }
+
+    .personal-card {
+      max-width: 620px;
+      margin: 20px auto 0;
+      text-align: left;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 11px;
+      background: #F3F4F6;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .benefits-panel {
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #FAFAFA;
+    }
+    .benefits-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .benefits-heading strong { display:block; font-size:14px; color:#111827; }
+    .benefits-heading span { display:block; margin-top:2px; font-size:11px; color:var(--muted); }
+    .loyalty-mini {
+      border-radius: 999px;
+      padding: 6px 9px;
+      background: #111827;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+    .promo-entry { display:grid; grid-template-columns:1fr auto; gap:8px; }
+    .promo-entry input {
+      min-width:0;
+      border:1px solid var(--line);
+      border-radius:11px;
+      padding:11px 12px;
+      background:#fff;
+      font:inherit;
+      text-transform:uppercase;
+    }
+    .promo-btn {
+      border:0;
+      border-radius:11px;
+      padding:0 13px;
+      background:#111827;
+      color:#fff;
+      font:inherit;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .promo-btn:disabled { opacity:.55; cursor:wait; }
+    .benefit-feedback { margin-top:9px; font-size:11px; line-height:1.45; color:var(--muted); }
+    .benefit-feedback.ok { color:#047857; font-weight:800; }
+    .benefit-feedback.error { color:#B91C1C; font-weight:800; }
+    .loyalty-dots {
+      display:grid;
+      grid-template-columns:repeat(10, 1fr);
+      gap:5px;
+      margin-top:11px;
+    }
+    .loyalty-dot {
+      aspect-ratio:1;
+      min-width:0;
+      display:grid;
+      place-items:center;
+      border:1px solid #D1D5DB;
+      border-radius:999px;
+      background:#fff;
+      color:#9CA3AF;
+      font-size:9px;
+      font-weight:900;
+    }
+    .loyalty-dot.done { background:#111827; border-color:#111827; color:#fff; }
+    .loyalty-dot.gift { border-color:var(--accent); color:var(--accent); }
+    .loyalty-dot.gift.done { background:var(--accent); color:#fff; }
+    .discount-breakdown {
+      margin-top:11px;
+      padding-top:10px;
+      border-top:1px solid var(--line);
+      display:grid;
+      gap:6px;
+      font-size:12px;
+    }
+    .discount-line { display:flex; justify-content:space-between; gap:12px; }
+    .discount-line strong { color:#047857; }
+    .loyalty-card-client {
+      margin-top:16px;
+      padding:15px;
+      border-radius:16px;
+      background:#111827;
+      color:#fff;
+      text-align:left;
+    }
+    .loyalty-card-client .muted-light { color:#CBD5E1; font-size:12px; line-height:1.5; }
+    .loyalty-card-client .loyalty-dots { grid-template-columns:repeat(10,1fr); }
+    .loyalty-card-client .loyalty-dot { background:#1F2937; border-color:#4B5563; color:#9CA3AF; }
+    .loyalty-card-client .loyalty-dot.done { background:#fff; border-color:#fff; color:#111827; }
+    .loyalty-card-client .loyalty-dot.gift { border-color:var(--accent); color:#fff; }
+    .loyalty-card-client .loyalty-dot.gift.done { background:var(--accent); border-color:var(--accent); color:#fff; }
+
+    .payment-notice {
+      margin-top: 14px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      background: #FFF7ED;
+      border: 1px solid #FED7AA;
+      color: #9A3412;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .payment-card {
+      margin-top: 18px;
+      padding: 17px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #111827, #1F2937);
+      color: #fff;
+      text-align: left;
+    }
+    .payment-card .payment-small { color: #CBD5E1; font-size: 12px; line-height: 1.5; }
+    .payment-card .payment-amount { margin-top: 4px; font-size: 26px; font-weight: 950; letter-spacing: -.03em; }
+    .pay-btn {
+      display: grid;
+      place-items: center;
+      min-height: 50px;
+      margin-top: 14px;
+      border-radius: 13px;
+      background: #FFFFFF;
+      color: #111827;
+      text-decoration: none;
+      font-weight: 950;
+      padding: 0 16px;
+    }
+    .demo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .03em;
+    }
+    .demo-pay-btn {
+      width: 100%;
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+    }
+    .demo-pay-btn:disabled { opacity: .55; cursor: wait; }
+
+    .cancel-box {
+      margin-top: 16px;
+      padding: 15px;
+      border: 1px solid #E5E7EB;
+      border-radius: 14px;
+      background: #FAFAFA;
+      text-align: left;
+    }
+    .cancel-title {
+      font-size: 14px;
+      font-weight: 950;
+      color: #111827;
+    }
+    .cancel-text {
+      margin-top: 6px;
+      color: #6B7280;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .cancel-btn {
+      width: 100%;
+      min-height: 46px;
+      margin-top: 12px;
+      border: 1px solid #DC2626;
+      border-radius: 12px;
+      background: #FFFFFF;
+      color: #B91C1C;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .cancel-btn:disabled { opacity: .55; cursor: wait; }
+    .cancelled-note {
+      margin-top: 16px;
+      padding: 13px 14px;
+      border-radius: 12px;
+      background: #F3F4F6;
+      color: #374151;
+      font-size: 12px;
+      line-height: 1.55;
+      text-align: left;
+    }
+    .refund-due {
+      background: #FFF7ED;
+      color: #9A3412;
+    }
+    .refund-done {
+      background: #ECFDF5;
+      color: #047857;
+    }
+
+    .payment-ok {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #DCFCE7;
+      color: #166534;
+      font-weight: 800;
+    }
+
+    .personal-link-btn {
+      display: inline-grid;
+      place-items: center;
+      min-height: 46px;
+      margin-top: 16px;
+      padding: 0 16px;
+      border-radius: 12px;
+      background: #111827;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    .success-card {
+      text-align: left;
+      max-width: 560px;
+      margin: 20px auto 0;
+      background: #F8FAFC;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .muted { color: var(--muted); }
+    .hidden { display: none !important; }
+
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .summary { position: static; order: 2; }
+    }
+
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 18px, 1120px); padding-top: 10px; }
+      .hero { border-radius: 20px; padding: 22px 18px; }
+      .form-panel { padding: 18px; }
+      .panel { border-radius: 19px; }
+      .grid-2, .service-grid { grid-template-columns: 1fr; }
+      .service-card { min-height: auto; padding: 15px; }
+      .service-included li { font-size: 12.5px; }
+      .summary { margin-top: 0; }
+      .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .date-row { grid-template-columns: 1fr; }
+      .secondary-btn { width: 100%; }
+      .hero h1 { font-size: 31px; }
+      .brand-row { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="brand-row">
+        <div class="logo" aria-hidden="true">DM</div>
+        <div>
+          <div class="eyebrow">● Réservation en ligne</div>
+          <h1 id="businessName">Detailing Mobile</h1>
+          <p id="slogan">Detailing auto & moto à domicile</p>
+        </div>
+      </div>
+      <div class="hero-meta">
+        <span class="pill" id="zonePill">Huy • Héron • Burdinne</span>
+        <span class="pill">Créneaux en temps réel</span>
+        <span class="pill">Confirmation immédiate</span>
+      </div>
+    </section>
+
+    <div id="loading" class="panel loading">
+      <div>
+        <div class="spinner"></div>
+        <div>Chargement des disponibilités…</div>
+      </div>
+    </div>
+
+    <section id="closedState" class="panel closed hidden">
+      <div class="state-icon">🗓️</div>
+      <h2>Réservations momentanément fermées</h2>
+      <p id="closedText">Les réservations en ligne ne sont pas encore ouvertes. Contactez-nous directement pour toute demande.</p>
+      <div id="closedContact" class="contact"></div>
+    </section>
+
+    <section id="app" class="layout hidden">
+      <form id="bookingForm" class="panel form-panel" novalidate>
+        <div class="section">
+          <div class="section-title">
+            <div class="step-num">1</div>
+            <div>
+              <h2>Choisissez votre prestation</h2>
+              <p class="section-note" id="welcomeText">Sélectionnez la formule adaptée à votre véhicule.</p>
+            </div>
+          </div>
+
+          <div class="type-tabs" role="tablist" aria-label="Type de véhicule">
+            <button type="button" class="type-tab active" data-type="Auto">🚗 Auto</button>
+            <button type="button" class="type-tab" data-type="Moto">🏍️ Moto</button>
+          </div>
+
+          <div id="serviceGrid" class="service-grid"></div>
+
+          <div id="optionsBlock" class="hidden" style="margin-top:20px;">
+            <div class="options-title-row">
+              <strong>Ajouter des options</strong>
+              <span>Facultatif</span>
+            </div>
+            <div id="optionsGrid" class="options-grid"></div>
+          </div>
+
+          <div id="regularBlock" class="regular-block hidden">
+            <div class="regular-head">
+              <strong>Entretien régulier</strong>
+              <span>Récompense les clients qui reviennent souvent</span>
+            </div>
+            <div id="regularGrid" class="regular-grid"></div>
+            <p id="regularNote" class="regular-note"></p>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <div class="step-num">2</div>
+            <div>
+              <h2>Vos informations</h2>
+              <p class="section-note">Ces informations servent uniquement à préparer et organiser le rendez-vous.</p>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="firstName">Prénom *</label>
+              <input id="firstName" name="firstName" autocomplete="given-name" required maxlength="60">
+            </div>
+            <div class="field">
+              <label for="lastName">Nom *</label>
+              <input id="lastName" name="lastName" autocomplete="family-name" required maxlength="60">
+            </div>
+            <div class="field">
+              <label for="phone">Téléphone *</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="04xx xx xx xx" required maxlength="40">
+            </div>
+            <div class="field">
+              <label for="email">E-mail *</label>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="nom@exemple.be" required maxlength="120">
+              <div class="section-note" style="margin-top:6px;">Pour recevoir la confirmation, votre lien personnel et le rappel la veille.</div>
+            </div>
+            <div class="field full">
+              <label for="vehicle">Marque / modèle du véhicule *</label>
+              <input id="vehicle" name="vehicle" placeholder="Ex. Volkswagen Golf 7" required maxlength="120">
+            </div>
+            <div class="field">
+              <label for="commune">Commune *</label>
+              <input id="commune" name="commune" autocomplete="address-level2" placeholder="Ex. Héron" required maxlength="100">
+            </div>
+            <div class="field">
+              <label for="address">Adresse *</label>
+              <input id="address" name="address" autocomplete="street-address" placeholder="Rue + numéro" required maxlength="180">
+            </div>
+            <div class="field full">
+              <label for="notes">Remarques <span class="muted">(facultatif)</span></label>
+              <textarea id="notes" name="notes" maxlength="1000" placeholder="État du véhicule, taches particulières, poils d’animaux, accès, etc."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <div class="step-num">3</div>
+            <div>
+              <h2>Choisissez votre créneau</h2>
+              <p class="section-note">Seuls les créneaux compatibles avec notre planning et Google Calendar sont proposés.</p>
+            </div>
+          </div>
+
+          <div class="date-row">
+            <div class="field">
+              <label for="date">Date souhaitée *</label>
+              <input id="date" name="date" type="date" required>
+            </div>
+            <button type="button" id="loadSlotsBtn" class="secondary-btn">Voir les créneaux</button>
+          </div>
+
+          <div id="slotStatus" class="helper">Choisissez d’abord une formule et une date.</div>
+          <div id="slots" class="slots"></div>
+          <div id="formError" class="error" role="alert"></div>
+        </div>
+      </form>
+
+      <aside class="panel summary" aria-label="Récapitulatif">
+        <h3>Vérifiez votre réservation</h3>
+        <div class="summary-line"><span>Formule</span><strong id="summaryService">À choisir</strong></div>
+        <div class="summary-line"><span>Options</span><strong id="summaryOptions">Aucune</strong></div>
+        <div class="summary-line"><span>Date</span><strong id="summaryDate">—</strong></div>
+        <div class="summary-line"><span>Heure</span><strong id="summaryTime">—</strong></div>
+        <div class="summary-total">
+          <div>
+            <div class="muted" style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;">Prix prévu</div>
+            <div class="price" id="summaryPrice">—</div>
+          </div>
+          <div class="duration" id="summaryDuration">—</div>
+        </div>
+
+        <div class="benefits-panel">
+          <div class="benefits-heading">
+            <div>
+              <strong>Vos avantages</strong>
+              <span>Promo & fidélité</span>
+            </div>
+            <div id="loyaltyMini" class="loyalty-mini">0 / 20</div>
+          </div>
+          <div class="promo-entry">
+            <input id="promoCode" maxlength="40" autocomplete="off" placeholder="Code promo (facultatif)">
+            <button type="button" id="applyPromoBtn" class="promo-btn">Appliquer</button>
+          </div>
+          <div id="benefitFeedback" class="benefit-feedback">Renseignez votre téléphone/e-mail pour vérifier automatiquement votre fidélité.</div>
+          <div id="loyaltyDots" class="loyalty-dots"></div>
+          <div id="discountBreakdown" class="discount-breakdown hidden"></div>
+        </div>
+
+        <div id="summaryPayment" class="payment-notice hidden"></div>
+        <div class="helper" style="margin-top:14px;">Vérifiez les informations ci-dessus avant de confirmer. Le prix peut évoluer uniquement si l’état réel du véhicule nécessite un travail supplémentaire convenu avec vous.</div>
+
+        <label class="check-row">
+          <input type="checkbox" id="termsCheck">
+          <span id="conditionsText">Je confirme que les informations fournies sont correctes.</span>
+        </label>
+
+        <button type="button" id="submitBtn" class="primary-btn" disabled>Confirmer la réservation</button>
+        <div id="sideError" class="error" role="alert"></div>
+        <div id="contactInfo" class="contact"></div>
+      </aside>
+    </section>
+
+
+    <section id="clientBookingState" class="panel success hidden" aria-live="polite">
+      <div class="state-icon">🚗</div>
+      <div class="status-pill" id="clientBookingStatus">Rendez-vous</div>
+      <h2 style="margin-top:12px;">Votre rendez-vous</h2>
+      <p id="clientBookingIntro">Voici les informations enregistrées pour votre réservation.</p>
+      <div class="success-card personal-card" id="clientBookingDetails"></div>
+      <div id="clientLoyaltyBox"></div>
+      <div id="clientPaymentBox"></div>
+      <div id="clientCancellationBox"></div>
+      <div id="clientBookingContact" class="contact"></div>
+    </section>
+
+    <section id="successState" class="panel success hidden" aria-live="polite">
+      <div class="state-icon">✓</div>
+      <h2 id="successTitle">Réservation enregistrée</h2>
+      <p id="successMessage"></p>
+      <div class="success-card" id="successDetails"></div>
+      <div id="successPaymentBox"></div>
+      <a id="personalBookingLink" class="personal-link-btn hidden" target="_top" rel="noopener">Consulter mon rendez-vous</a>
+      <button type="button" id="newBookingBtn" class="secondary-btn" style="margin-top:18px;">Faire une autre réservation</button>
+    </section>
+  </main>
+
+  <script>
+
+      const API_BASE = 'https://kryven-api.kryvendetailing.workers.dev';
+
+      async function apiCall(action, payload = {}) {
+        if (!API_BASE || API_BASE.includes('https://kryven-api.kryvendetailing.workers.dev')) {
+          throw new Error('Le lien du serveur Kryven n’est pas encore configuré.');
+        }
+        const response = await fetch(API_BASE, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action, payload })
+        });
+        if (!response.ok) throw new Error('Serveur indisponible (' + response.status + ').');
+        const data = await response.json();
+        return data;
+      }
+
+    (() => {
+      'use strict';
+
+      const state = {
+        config: null,
+        type: 'Auto',
+        service: null,
+        optionNames: new Set(),
+        regularity: '',
+        selectedTime: '',
+        loadingSlots: false,
+        submitting: false,
+        personalBookingId: '',
+        personalToken: '',
+        benefits: null,
+        benefitsLoading: false
+      };
+
+      const $ = id => document.getElementById(id);
+      const els = {
+        loading: $('loading'),
+        app: $('app'),
+        closed: $('closedState'),
+        success: $('successState'),
+        clientBooking: $('clientBookingState'),
+        form: $('bookingForm'),
+        serviceGrid: $('serviceGrid'),
+        optionsBlock: $('optionsBlock'),
+        optionsGrid: $('optionsGrid'),
+        regularBlock: $('regularBlock'),
+        regularGrid: $('regularGrid'),
+        date: $('date'),
+        slots: $('slots'),
+        slotStatus: $('slotStatus'),
+        loadSlotsBtn: $('loadSlotsBtn'),
+        formError: $('formError'),
+        sideError: $('sideError'),
+        submitBtn: $('submitBtn'),
+        terms: $('termsCheck')
+      };
+
+      function boot() {
+        wireStaticEvents();
+        const params = new URLSearchParams(window.location.search);
+        const booking = params.get('booking');
+        const token = params.get('token');
+        if (booking && token) loadPersonalBooking(booking, token);
+        else loadBookingApp();
+      }
+
+      async function loadBookingApp() {
+        try { initFromConfig(await apiCall('getBookingConfig')); }
+        catch (err) { showFatal(err && err.message ? err.message : 'Impossible de charger la page.'); }
+      }
+
+      async function loadPersonalBooking(bookingId, token) {
+        state.personalBookingId = bookingId || '';
+        state.personalToken = token || '';
+        try { renderPersonalBooking(await apiCall('getClientBooking', { bookingId, token })); }
+        catch (err) { showFatal(err && err.message ? err.message : 'Impossible de charger ce rendez-vous.'); }
+      }
+
+      function renderPersonalBooking(result) {
+        els.loading.classList.add('hidden');
+
+        // Quand on arrive sur la page personnelle après un paiement démo,
+        // masquer l'ancien écran de confirmation/paiement pour éviter les doublons.
+        if (els.success) els.success.classList.add('hidden');
+        if (els.form) els.form.classList.add('hidden');
+
+        if (!result || !result.ok || !result.booking) {
+          showFatal(result && result.message ? result.message : 'Ce lien de rendez-vous est invalide.');
+          return;
+        }
+
+        if (/^#[0-9A-Fa-f]{6}$/.test(result.accentColor || '')) {
+          document.documentElement.style.setProperty('--accent', result.accentColor);
+        }
+        $('businessName').textContent = result.businessName || 'Detailing Mobile';
+        $('slogan').textContent = result.slogan || 'Detailing auto & moto à domicile';
+        $('zonePill').textContent = result.zone || 'Service mobile';
+
+        const b = result.booking;
+        $('clientBookingStatus').textContent = b.status || 'Rendez-vous';
+        $('clientBookingIntro').textContent =
+          (b.firstName ? 'Bonjour ' + b.firstName + '. ' : '') +
+          'Ce lien est personnel : il n’affiche que votre propre réservation.';
+
+        const details = $('clientBookingDetails');
+        details.innerHTML = '';
+        [
+          ['Référence', b.id],
+          ['Statut', b.status],
+          ['Véhicule', b.vehicle],
+          ['Formule', b.service],
+          ['Options', b.options || 'Aucune'],
+          ['Date', formatDateFr(b.date)],
+          ['Heure', b.time],
+          ['Durée prévue', formatDuration(b.durationHours)],
+          ...(b.basePrice > b.price ? [['Prix initial', formatMoney(b.basePrice)]] : []),
+          ...(b.promoDiscount > 0 ? [['Code promo ' + b.promoCode, '-' + formatMoney(b.promoDiscount)]] : []),
+          ...(b.loyaltyDiscount > 0 ? [['Récompense fidélité', '-' + formatMoney(b.loyaltyDiscount)]] : []),
+          ...(b.regularDiscount > 0 ? [['Entretien régulier' + (b.regularity ? ' — ' + b.regularity : ''), '-' + formatMoney(b.regularDiscount)]] : []),
+          ['Prix prévu', formatMoney(b.price)],
+          ['Adresse', b.address]
+        ].forEach(([label, value]) => {
+          const row = document.createElement('div');
+          row.className = 'summary-line';
+          const l = document.createElement('span');
+          l.textContent = label;
+          const v = document.createElement('strong');
+          v.textContent = value || '—';
+          row.append(l, v);
+          details.appendChild(row);
+        });
+
+        renderClientLoyaltyCard(b);
+
+        const payBox = $('clientPaymentBox');
+        payBox.innerHTML = '';
+        if (b.paymentStatus === 'Payé') {
+          const ok = document.createElement('div');
+          ok.className = 'payment-ok';
+          ok.textContent = '✓ Acompte reçu : ' + formatMoney(b.depositPaid) + ' • Reste à payer : ' + formatMoney(b.remaining);
+          payBox.appendChild(ok);
+        } else if (b.paymentUrl && b.depositExpected > 0 && !['Expiré','Annulé'].includes(b.paymentStatus)) {
+          payBox.appendChild(buildPaymentCard(
+            b.depositExpected,
+            b.paymentUrl,
+            b.paymentDeadline,
+            result.paymentMode,
+            { bookingId: state.personalBookingId, token: state.personalToken, refresh: true }
+          ));
+        } else if (b.paymentStatus === 'Expiré') {
+          const expired = document.createElement('div');
+          expired.className = 'payment-notice';
+          expired.textContent = 'Le délai de paiement est expiré et ce créneau a été libéré.';
+          payBox.appendChild(expired);
+        }
+
+        renderCancellationBox(result, b);
+
+        $('clientBookingContact').textContent = [result.phone, result.instagram].filter(Boolean).join(' • ');
+        els.clientBooking.classList.remove('hidden');
+      }
+
+      function renderCancellationBox(result, booking) {
+        const box = $('clientCancellationBox');
+        box.innerHTML = '';
+
+        const c = booking.cancellation || {};
+        if (!c.enabled && booking.status !== 'Annulé') return;
+
+        if (booking.status === 'Annulé') {
+          const note = document.createElement('div');
+          note.className = 'cancelled-note';
+
+          if (booking.refundStatus === 'À rembourser' && booking.refundAmount > 0) {
+            note.classList.add('refund-due');
+            note.textContent =
+              'Rendez-vous annulé ✓ Votre acompte de ' +
+              formatMoney(booking.refundAmount) +
+              ' doit être remboursé manuellement par notre équipe.';
+          } else if (booking.refundStatus === 'Remboursé' && booking.refundAmount > 0) {
+            note.classList.add('refund-done');
+            note.textContent =
+              'Rendez-vous annulé ✓ Votre acompte de ' +
+              formatMoney(booking.refundAmount) +
+              ' a été marqué comme remboursé.';
+          } else {
+            note.textContent = 'Ce rendez-vous est annulé. Le créneau a été libéré.';
+          }
+
+          box.appendChild(note);
+          return;
+        }
+
+        if (booking.status === 'Terminé') return;
+
+        const panel = document.createElement('div');
+        panel.className = 'cancel-box';
+
+        const title = document.createElement('div');
+        title.className = 'cancel-title';
+        title.textContent = 'Besoin d’annuler ?';
+
+        const text = document.createElement('div');
+        text.className = 'cancel-text';
+
+        if (c.canCancel) {
+          text.textContent =
+            'Vous pouvez annuler en ligne jusqu’au ' +
+            (c.deadline || '') +
+            ' (' + (c.noticeHours || 24) + ' h avant). ' +
+            (c.refundIfOnTime
+              ? 'Si un acompte a déjà été payé, il sera remboursé manuellement.'
+              : '');
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'cancel-btn';
+          btn.textContent = 'Annuler mon rendez-vous';
+
+          btn.addEventListener('click', () => {
+            const refundText = booking.depositPaid > 0 && c.refundIfOnTime
+              ? '\n\nVotre acompte de ' + formatMoney(booking.depositPaid) + ' sera marqué à rembourser.'
+              : '';
+
+            const ok = window.confirm(
+              'Confirmer l’annulation de votre rendez-vous ?' +
+              refundText +
+              '\n\nCette action libérera immédiatement le créneau.'
+            );
+            if (!ok) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Annulation en cours…';
+            apiCall('cancelClientBooking', { bookingId: state.personalBookingId, token: state.personalToken })
+              .then(res => {
+                if (!res || !res.ok) {
+                  btn.disabled = false;
+                  btn.textContent = 'Annuler mon rendez-vous';
+                  alert(res && res.message ? res.message : 'Impossible d’annuler le rendez-vous.');
+                  return;
+                }
+                loadPersonalBooking(state.personalBookingId, state.personalToken);
+              })
+              .catch(err => {
+                btn.disabled = false;
+                btn.textContent = 'Annuler mon rendez-vous';
+                alert(err && err.message ? err.message : 'Impossible d’annuler le rendez-vous.');
+              });
+          });
+
+          panel.append(title, text, btn);
+        } else {
+          text.textContent =
+            'L’annulation en ligne n’est plus disponible à moins de ' +
+            (c.noticeHours || 24) +
+            ' h du rendez-vous. Contactez-nous directement si nécessaire.';
+          panel.append(title, text);
+        }
+
+        box.appendChild(panel);
+      }
+
+      function initFromConfig(config) {
+        els.loading.classList.add('hidden');
+        if (!config || !config.ok) {
+          showFatal(config && config.message ? config.message : 'Configuration indisponible.');
+          return;
+        }
+
+        state.config = config;
+        if (/^#[0-9A-Fa-f]{6}$/.test(config.accentColor || '')) {
+          document.documentElement.style.setProperty('--accent', config.accentColor);
+        }
+
+        $('businessName').textContent = config.businessName || 'Detailing Mobile';
+        $('slogan').textContent = config.slogan || 'Detailing auto & moto à domicile';
+        $('zonePill').textContent = config.zone || 'Service mobile';
+        $('welcomeText').textContent = config.welcome || 'Choisissez votre formule puis votre créneau.';
+        const baseConditions = config.conditions || 'Je confirme que les informations fournies sont correctes.';
+        const cancelConditions = config.cancellation && config.cancellation.enabled
+          ? ' Annulation sans frais jusqu’à ' + config.cancellation.noticeHours +
+            ' h avant le rendez-vous' +
+            (config.cancellation.refundDeposit ? ' avec remboursement manuel de l’acompte payé.' : '.')
+          : '';
+        $('conditionsText').textContent = baseConditions + cancelConditions;
+        els.date.min = config.minDate || '';
+        els.date.max = config.maxDate || '';
+        setContactInfo();
+
+        if (!config.open) {
+          $('closedText').textContent = config.welcome || 'Les réservations en ligne ne sont pas encore ouvertes.';
+          $('closedContact').textContent = contactText();
+          els.closed.classList.remove('hidden');
+          return;
+        }
+
+        els.app.classList.remove('hidden');
+        const availableTypes = new Set((config.services || []).map(x => x.type));
+        if (!availableTypes.has('Auto') && availableTypes.has('Moto')) state.type = 'Moto';
+        updateTypeTabs();
+        renderServices();
+        renderOptions();
+        renderRegularity();
+        renderLoyaltyProgress(0, (config.loyalty && config.loyalty.cycle) || 20);
+        updateSummary();
+      }
+
+      function wireStaticEvents() {
+        document.querySelectorAll('.type-tab').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.type = btn.dataset.type;
+            state.service = null;
+            state.optionNames.clear();
+            state.regularity = '';
+            state.selectedTime = '';
+            invalidateBenefits();
+            updateTypeTabs();
+            renderServices();
+            renderOptions();
+            renderRegularity();
+            clearSlots('Choisissez une formule et une date pour afficher les créneaux.');
+            updateSummary();
+          });
+        });
+
+        els.loadSlotsBtn.addEventListener('click', loadSlots);
+        $('applyPromoBtn').addEventListener('click', () => refreshBenefits(true));
+        $('promoCode').addEventListener('input', () => {
+          $('promoCode').value = $('promoCode').value.toUpperCase();
+          invalidateBenefits();
+        });
+        ['phone','email'].forEach(id => {
+          $(id).addEventListener('blur', () => refreshBenefits(false));
+        });
+        els.date.addEventListener('change', () => {
+          state.selectedTime = '';
+          invalidateBenefits();
+          updateSummary();
+          if (state.service && els.date.value) {
+            loadSlots();
+            refreshBenefits(false);
+          }
+        });
+        els.terms.addEventListener('change', updateSubmitState);
+        els.submitBtn.addEventListener('click', submitBooking);
+        $('newBookingBtn').addEventListener('click', () => window.location.reload());
+
+        ['firstName','lastName','phone','email','vehicle','commune','address','notes'].forEach(id => {
+          $(id).addEventListener('input', () => {
+            if (id === 'phone' || id === 'email') invalidateBenefits();
+            updateSubmitState();
+          });
+        });
+      }
+
+      function updateTypeTabs() {
+        document.querySelectorAll('.type-tab').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.type === state.type);
+        });
+      }
+
+      function renderServices() {
+        els.serviceGrid.innerHTML = '';
+        const services = (state.config.services || []).filter(service => service.type === state.type);
+
+        if (!services.length) {
+          els.serviceGrid.innerHTML = '<div class="helper" style="grid-column:1/-1;">Aucune formule disponible pour ce type de véhicule.</div>';
+          return;
+        }
+
+        services.forEach(service => {
+          const selected = state.service && state.service.name === service.name;
+
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'service-card';
+          button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+          if (selected) button.classList.add('selected');
+
+          const top = document.createElement('div');
+          top.className = 'service-topline';
+
+          const titleWrap = document.createElement('div');
+          const name = document.createElement('div');
+          name.className = 'service-name';
+          name.textContent = service.name;
+
+          const meta = document.createElement('div');
+          meta.className = 'service-meta';
+          meta.textContent = formatDuration(service.durationHours);
+
+          titleWrap.append(name, meta);
+
+          const badge = document.createElement('div');
+          badge.className = 'service-badge';
+          badge.textContent = selected
+            ? 'Choisie'
+            : (((normalizeClientText(service.name).includes('interieur') && normalizeClientText(service.name).includes('exterieur')) || normalizeClientText(service.name).includes('complet') || normalizeClientText(service.name).includes('full')) ? 'Le + choisi' : service.type);
+
+          top.append(titleWrap, badge);
+
+          const tagline = document.createElement('div');
+          tagline.className = 'service-tagline';
+          tagline.textContent = service.tagline || 'Prestation de detailing adaptée à votre véhicule.';
+
+          const included = document.createElement('ul');
+          included.className = 'service-included';
+          (service.included || []).forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            included.appendChild(li);
+          });
+
+          const more = document.createElement('div');
+          more.className = 'service-more';
+          if ((service.included || []).length > 3) {
+            more.textContent = '+' + ((service.included || []).length - 3) + ' élément' +
+              ((service.included || []).length - 3 > 1 ? 's' : '') + ' • touchez pour voir tout';
+          } else {
+            more.textContent = 'Touchez pour choisir';
+          }
+
+          const price = document.createElement('div');
+          price.className = 'service-price';
+          price.textContent = formatMoney(service.price);
+
+          button.append(top, tagline, included, more, price);
+          button.addEventListener('click', () => {
+            state.service = service;
+            state.optionNames.clear();
+            state.selectedTime = '';
+            invalidateBenefits();
+            renderServices();
+            renderOptions();
+            renderRegularity();
+            updateSummary();
+            if (els.date.value) {
+              loadSlots();
+              refreshBenefits(false);
+            } else clearSlots('Choisissez maintenant une date.');
+          });
+          els.serviceGrid.appendChild(button);
+        });
+      }
+
+      function normalizeClientText(value) {
+        return String(value || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase();
+      }
+
+      function renderOptions() {
+        els.optionsGrid.innerHTML = '';
+        if (!state.service) {
+          els.optionsBlock.classList.add('hidden');
+          return;
+        }
+
+        const options = (state.config.options || []).filter(option => option.type === 'Tous' || option.type === state.type);
+        if (!options.length) {
+          els.optionsBlock.classList.add('hidden');
+          return;
+        }
+
+        els.optionsBlock.classList.remove('hidden');
+        options.forEach(option => {
+          const label = document.createElement('label');
+          label.className = 'option-row';
+
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.checked = state.optionNames.has(option.name);
+          input.setAttribute('aria-label', option.name);
+
+          const textWrap = document.createElement('div');
+          const name = document.createElement('div');
+          name.className = 'option-name';
+          name.textContent = option.name;
+          const sub = document.createElement('div');
+          sub.className = 'option-sub';
+          const durationText = option.durationHours > 0 ? ' • +' + formatDuration(option.durationHours) : '';
+          sub.textContent = (option.description || 'Option complémentaire.') + durationText;
+          textWrap.append(name, sub);
+
+          const price = document.createElement('div');
+          price.className = 'option-price';
+          price.textContent = '+' + formatMoney(option.price);
+
+          input.addEventListener('change', () => {
+            if (input.checked) state.optionNames.add(option.name);
+            else state.optionNames.delete(option.name);
+            state.selectedTime = '';
+            invalidateBenefits();
+            updateSummary();
+            if (els.date.value) {
+              loadSlots();
+              refreshBenefits(false);
+            }
+          });
+
+          label.append(input, textWrap, price);
+          els.optionsGrid.appendChild(label);
+        });
+      }
+
+      function renderRegularity() {
+        const config = state.config && state.config.regular;
+        if (!config || !config.enabled || !state.service || state.type !== 'Auto') {
+          state.regularity = '';
+          els.regularBlock.classList.add('hidden');
+          return;
+        }
+        const choices = [
+          { key:'1w', label:'Chaque semaine', percent:Number(config.oneWeekPercent || 0) },
+          { key:'2w', label:'Toutes les 2 semaines', percent:Number(config.twoWeeksPercent || 0) },
+          { key:'3w', label:'Toutes les 3 semaines', percent:Number(config.threeWeeksPercent || 0) }
+        ].filter(x => x.percent > 0);
+        if (!choices.length) {
+          els.regularBlock.classList.add('hidden');
+          return;
+        }
+        els.regularBlock.classList.remove('hidden');
+        els.regularGrid.innerHTML = '';
+
+        const normal = document.createElement('button');
+        normal.type = 'button';
+        normal.className = 'regular-choice' + (!state.regularity ? ' selected' : '');
+        normal.innerHTML = '<strong>Ponctuel</strong><small>Tarif normal</small>';
+        normal.addEventListener('click', () => {
+          state.regularity = '';
+          invalidateBenefits();
+          renderRegularity();
+          updateSummary();
+          if (els.date.value) refreshBenefits(false);
+        });
+        els.regularGrid.appendChild(normal);
+
+        choices.forEach(choice => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'regular-choice' + (state.regularity === choice.key ? ' selected' : '');
+          btn.innerHTML = '<strong>' + choice.label + '</strong><small>-' + choice.percent + ' %</small>';
+          btn.addEventListener('click', () => {
+            state.regularity = choice.key;
+            invalidateBenefits();
+            renderRegularity();
+            updateSummary();
+            if (els.date.value) refreshBenefits(false);
+          });
+          els.regularGrid.appendChild(btn);
+        });
+        $('regularNote').textContent = config.text || 'La remise est vérifiée automatiquement à partir de votre historique.';
+      }
+
+      function loadSlots() {
+        hideErrors();
+        if (!state.service) {
+          showError('Choisissez d’abord une formule.');
+          return;
+        }
+        if (!els.date.value) {
+          showError('Choisissez une date.');
+          return;
+        }
+
+        state.loadingSlots = true;
+        state.selectedTime = '';
+        els.loadSlotsBtn.disabled = true;
+        els.slots.innerHTML = '';
+        els.slotStatus.textContent = 'Recherche des créneaux disponibles…';
+        updateSummary();
+        apiCall('getAvailableSlots', {
+          serviceName: state.service.name,
+          optionNames: [...state.optionNames],
+          date: els.date.value
+        }).then(result => {
+          state.loadingSlots = false;
+          els.loadSlotsBtn.disabled = false;
+          if (!result || !result.ok) {
+            clearSlots(result && result.message ? result.message : 'Impossible de charger les créneaux.');
+            return;
+          }
+          renderSlots(result.slots || []);
+        }).catch(err => {
+          state.loadingSlots = false;
+          els.loadSlotsBtn.disabled = false;
+          clearSlots(err && err.message ? err.message : 'Impossible de charger les créneaux.');
+        });
+      }
+
+      function renderSlots(slots) {
+        els.slots.innerHTML = '';
+        if (!slots.length) {
+          els.slotStatus.textContent = 'Aucun créneau disponible ce jour. Essaie une autre date.';
+          updateSubmitState();
+          return;
+        }
+
+        els.slotStatus.textContent = slots.length + (slots.length > 1 ? ' créneaux disponibles' : ' créneau disponible');
+        slots.forEach(slot => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'slot';
+          button.textContent = slot.label;
+          button.dataset.time = slot.value;
+          button.addEventListener('click', () => {
+            state.selectedTime = slot.value;
+            document.querySelectorAll('.slot').forEach(x => x.classList.toggle('selected', x === button));
+            updateSummary();
+          });
+          els.slots.appendChild(button);
+        });
+        updateSubmitState();
+      }
+
+      function clearSlots(message) {
+        state.selectedTime = '';
+        els.slots.innerHTML = '';
+        els.slotStatus.textContent = message || 'Choisissez une date.';
+        updateSubmitState();
+      }
+
+      function submitBooking() {
+        hideErrors();
+        if (state.submitting) return;
+
+        const validationMessage = validateClientSide();
+        if (validationMessage) {
+          showError(validationMessage);
+          return;
+        }
+
+        state.submitting = true;
+        els.submitBtn.disabled = true;
+        els.submitBtn.textContent = 'Validation en cours…';
+
+        const payload = {
+          serviceName: state.service.name,
+          optionNames: [...state.optionNames],
+          type: state.type,
+          firstName: $('firstName').value,
+          lastName: $('lastName').value,
+          phone: $('phone').value,
+          email: $('email').value,
+          vehicle: $('vehicle').value,
+          commune: $('commune').value,
+          address: $('address').value,
+          notes: $('notes').value,
+          promoCode: $('promoCode').value.trim().toUpperCase(),
+          regularity: state.regularity,
+          date: els.date.value,
+          time: state.selectedTime
+        };
+        apiCall('submitBooking', payload).then(result => {
+          state.submitting = false;
+          els.submitBtn.textContent = 'Confirmer la réservation';
+          if (!result || !result.ok) {
+            showSideError(result && result.message ? result.message : 'Impossible d’enregistrer la réservation.');
+            updateSubmitState();
+            if (els.date.value) loadSlots();
+            return;
+          }
+          showSuccess(result);
+        }).catch(err => {
+          state.submitting = false;
+          els.submitBtn.textContent = 'Confirmer la réservation';
+          showSideError(err && err.message ? err.message : 'Impossible d’enregistrer la réservation.');
+          updateSubmitState();
+        });
+      }
+
+      function showSuccess(result) {
+        els.app.classList.add('hidden');
+        els.success.classList.remove('hidden');
+
+        const confirmed = result.status === 'Confirmé';
+        $('successTitle').textContent = confirmed ? 'Rendez-vous confirmé ✓' : 'Demande enregistrée ✓';
+        $('successMessage').textContent = confirmed
+          ? 'Le créneau est réservé dans notre planning.'
+          : 'Le créneau est bloqué. Nous vous recontacterons pour confirmer définitivement le rendez-vous.';
+
+        const details = $('successDetails');
+        details.innerHTML = '';
+        [
+          ['Référence', result.bookingId],
+          ['Client', result.customerName],
+          ['Véhicule', result.vehicle],
+          ['Formule', result.service],
+          ['Date', formatDateFr(result.date)],
+          ['Heure', result.time],
+          ['Durée prévue', formatDuration(result.durationHours)],
+          ...(result.basePrice > result.price ? [['Prix initial', formatMoney(result.basePrice)]] : []),
+          ...(result.promoDiscount > 0 ? [['Code promo ' + result.promoCode, '-' + formatMoney(result.promoDiscount)]] : []),
+          ...(result.loyaltyDiscount > 0 ? [['Récompense fidélité', '-' + formatMoney(result.loyaltyDiscount)]] : []),
+          ...(result.regularDiscount > 0 ? [['Entretien régulier' + (result.regularity ? ' — ' + result.regularity : ''), '-' + formatMoney(result.regularDiscount)]] : []),
+          ['Prix prévu', formatMoney(result.price)],
+          ['Adresse', result.address]
+        ].forEach(([label, value]) => {
+          const row = document.createElement('div');
+          row.className = 'summary-line';
+          const l = document.createElement('span');
+          l.textContent = label;
+          const v = document.createElement('strong');
+          v.textContent = value || '—';
+          row.append(l, v);
+          details.appendChild(row);
+        });
+
+        const successPayBox = $('successPaymentBox');
+        successPayBox.innerHTML = '';
+        if (result.paymentRequired && result.paymentUrl) {
+          $('successTitle').textContent = 'Créneau bloqué — acompte à régler';
+          $('successMessage').textContent = 'Votre créneau est réservé provisoirement. Le paiement de l’acompte le confirme définitivement.';
+          successPayBox.appendChild(buildPaymentCard(
+            result.depositExpected,
+            result.paymentUrl,
+            result.paymentDeadline,
+            result.paymentMode,
+            { bookingId: result.bookingId, token: result.clientToken, refresh: false }
+          ));
+        }
+
+        const personalLink = $('personalBookingLink');
+        if (result.personalUrl) {
+          personalLink.href = result.personalUrl;
+          personalLink.classList.remove('hidden');
+        } else {
+          personalLink.classList.add('hidden');
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function calculateClientDeposit(totalPrice) {
+        const p = state.config && state.config.payment;
+        const total = Math.max(0, Number(totalPrice || 0));
+        if (!p || !p.enabled) return 0;
+        if (p.mode === 'Total') return round2(total);
+        if (p.mode === 'Pourcentage') return Math.min(total, round2(total * Number(p.percent || 0) / 100));
+        return Math.min(total, Math.max(0, round2(Number(p.fixedAmount || 0))));
+      }
+
+      function buildPaymentCard(amount, url, deadline, paymentMode, demoContext) {
+        const box = document.createElement('div');
+        box.className = 'payment-card';
+
+        const isDemo = paymentMode === 'Démo';
+
+        if (isDemo) {
+          const badge = document.createElement('div');
+          badge.className = 'demo-badge';
+          badge.textContent = '🧪 MODE DÉMO — aucun argent réel';
+          box.appendChild(badge);
+        }
+
+        const label = document.createElement('div');
+        label.className = 'payment-small';
+        label.textContent = isDemo
+          ? 'Simulation de l’acompte pour tester tout le parcours'
+          : 'Acompte à régler pour confirmer le créneau';
+
+        const price = document.createElement('div');
+        price.className = 'payment-amount';
+        price.textContent = formatMoney(amount);
+
+        const info = document.createElement('div');
+        info.className = 'payment-small';
+        info.style.marginTop = '6px';
+        info.textContent = isDemo
+          ? 'Ce bouton simule un paiement réussi. Aucune carte n’est demandée et aucun montant n’est débité.'
+          : (deadline
+              ? 'Lien valable jusqu’au ' + deadline + '. Paiement sécurisé sur la page Revolut.'
+              : 'Paiement sécurisé sur la page Revolut.');
+
+        let button;
+
+        if (isDemo && demoContext && demoContext.bookingId && demoContext.token) {
+          button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'pay-btn demo-pay-btn';
+          button.textContent = 'Simuler le paiement ' + formatMoney(amount);
+          button.addEventListener('click', () => {
+            if (button.disabled) return;
+            button.disabled = true;
+            button.textContent = 'Simulation en cours…';
+            apiCall('simulerPaiementDemo', { bookingId: demoContext.bookingId, token: demoContext.token })
+              .then(result => {
+                if (!result || !result.ok) {
+                  button.disabled = false;
+                  button.textContent = 'Simuler le paiement ' + formatMoney(amount);
+                  alert(result && result.message ? result.message : 'La simulation a échoué.');
+                  return;
+                }
+                loadPersonalBooking(demoContext.bookingId, demoContext.token);
+              })
+              .catch(err => {
+                button.disabled = false;
+                button.textContent = 'Simuler le paiement ' + formatMoney(amount);
+                alert(err && err.message ? err.message : 'La simulation a échoué.');
+              });
+          });
+        } else {
+          button = document.createElement('a');
+          button.className = 'pay-btn';
+          button.href = url || '#';
+          button.target = '_top';
+          button.rel = 'noopener';
+          button.textContent = isDemo
+            ? 'Ouvrir le paiement démo'
+            : 'Payer l’acompte ' + formatMoney(amount);
+        }
+
+        box.append(label, price, info, button);
+        return box;
+      }
+
+      function invalidateBenefits() {
+        state.benefits = null;
+        const feedback = $('benefitFeedback');
+        if (feedback) {
+          feedback.className = 'benefit-feedback';
+          feedback.textContent = 'Renseignez votre téléphone/e-mail et une date pour vérifier automatiquement vos remises.';
+        }
+        const breakdown = $('discountBreakdown');
+        if (breakdown) {
+          breakdown.classList.add('hidden');
+          breakdown.innerHTML = '';
+        }
+        const cycle = (state.config && state.config.loyalty && state.config.loyalty.cycle) || 20;
+        renderLoyaltyProgress(0, cycle);
+      }
+
+      function renderLoyaltyProgress(progress, cycle) {
+        progress = Math.max(0, Math.min(Number(progress || 0), Number(cycle || 20)));
+        cycle = Math.max(2, Number(cycle || 20));
+        const mini = $('loyaltyMini');
+        if (mini) mini.textContent = progress + ' / ' + cycle;
+        const box = $('loyaltyDots');
+        if (!box) return;
+        box.innerHTML = '';
+        for (let i = 1; i <= cycle; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'loyalty-dot' + (i <= progress ? ' done' : '') + (i === cycle ? ' gift' : '');
+          dot.textContent = i === cycle ? '🎁' : i;
+          box.appendChild(dot);
+        }
+      }
+
+      function refreshBenefits(showPromoErrors) {
+        if (state.benefitsLoading || !state.service || !els.date.value) return;
+        const phone = $('phone').value.trim();
+        const email = $('email').value.trim();
+        if (phone.replace(/\D/g, '').length < 8 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          if (showPromoErrors) {
+            const feedback = $('benefitFeedback');
+            feedback.className = 'benefit-feedback error';
+            feedback.textContent = 'Renseignez d’abord votre téléphone ou votre e-mail.';
+          }
+          return;
+        }
+
+        state.benefitsLoading = true;
+        const btn = $('applyPromoBtn');
+        btn.disabled = true;
+        btn.textContent = 'Vérification…';
+        apiCall('previewBenefits', {
+            serviceName: state.service.name,
+            optionNames: [...state.optionNames],
+            type: state.type,
+            date: els.date.value,
+            phone,
+            email,
+            promoCode: $('promoCode').value.trim().toUpperCase(),
+            regularity: state.regularity
+          }).then(result => {
+            state.benefitsLoading = false;
+            btn.disabled = false;
+            btn.textContent = 'Appliquer';
+            if (!result || !result.ok) {
+              state.benefits = null;
+              const feedback = $('benefitFeedback');
+              feedback.className = 'benefit-feedback error';
+              feedback.textContent = result && result.message ? result.message : 'Impossible de vérifier les avantages.';
+              updateSummary();
+              return;
+            }
+            state.benefits = result;
+            renderBenefits(result, showPromoErrors);
+            updateSummary();
+          }).catch(err => {
+            state.benefitsLoading = false;
+            btn.disabled = false;
+            btn.textContent = 'Appliquer';
+            const feedback = $('benefitFeedback');
+            feedback.className = 'benefit-feedback error';
+            feedback.textContent = err && err.message ? err.message : 'Impossible de vérifier les avantages.';
+          });
+      }
+
+      function renderBenefits(result, showPromoErrors) {
+        const loyalty = result.loyalty || {};
+        renderLoyaltyProgress(loyalty.progress || 0, loyalty.cycle || 20);
+
+        const feedback = $('benefitFeedback');
+        feedback.className = 'benefit-feedback';
+        const messages = [];
+
+        if (result.promoRequested) {
+          if (result.promoValid) messages.push(result.promoMessage || ('Code ' + result.promoCode + ' valide ✓'));
+          else if (showPromoErrors) {
+            feedback.className = 'benefit-feedback error';
+            messages.push(result.promoMessage || 'Code promo invalide.');
+          }
+        }
+
+        const regular = result.regular || {};
+        if (regular.requested && regular.message) messages.push(regular.eligible ? '🔁 ' + regular.message : regular.message);
+
+        if (loyalty.eligible && loyalty.rewardAmount > 0) {
+          messages.push('🎁 Votre prochain rendez-vous est le ' + loyalty.cycle + 'e : récompense fidélité de ' + formatMoney(loyalty.rewardAmount) + '.');
+        } else if (loyalty.rewardReservedElsewhere) {
+          messages.push('Une récompense fidélité est déjà réservée sur un autre rendez-vous actif.');
+        } else if (loyalty.enabled) {
+          const remain = loyalty.remaining || loyalty.cycle;
+          messages.push(remain === 1
+            ? 'Plus qu’un detailing terminé avant votre récompense 🎁'
+            : 'Encore ' + remain + ' detailings terminés avant votre prochaine récompense.');
+        }
+
+        if (result.totalDiscount > 0) feedback.className = 'benefit-feedback ok';
+        feedback.textContent = messages.join(' ') || 'Aucun avantage à appliquer pour ce rendez-vous.';
+
+        const breakdown = $('discountBreakdown');
+        breakdown.innerHTML = '';
+        if (result.promoDiscount > 0 || result.loyaltyDiscount > 0 || result.regularDiscount > 0) {
+          const rows = [];
+          if (result.promoDiscount > 0) rows.push(['Code ' + result.promoCode, '-' + formatMoney(result.promoDiscount)]);
+          if (result.loyaltyDiscount > 0) rows.push(['Récompense fidélité', '-' + formatMoney(result.loyaltyDiscount)]);
+          if (result.regularDiscount > 0) rows.push(['Entretien régulier', '-' + formatMoney(result.regularDiscount)]);
+          rows.push(['Prix après avantage', formatMoney(result.finalPrice)]);
+          rows.forEach(([label, value]) => {
+            const line = document.createElement('div');
+            line.className = 'discount-line';
+            const l = document.createElement('span'); l.textContent = label;
+            const v = document.createElement('strong'); v.textContent = value;
+            line.append(l, v); breakdown.appendChild(line);
+          });
+          breakdown.classList.remove('hidden');
+        } else {
+          breakdown.classList.add('hidden');
+        }
+      }
+
+      function renderClientLoyaltyCard(booking) {
+        const host = $('clientLoyaltyBox');
+        if (!host) return;
+        host.innerHTML = '';
+        const loyalty = booking.loyalty || {};
+        if (!loyalty.enabled) return;
+
+        const card = document.createElement('div');
+        card.className = 'loyalty-card-client';
+        const title = document.createElement('div');
+        title.style.fontWeight = '950';
+        title.style.fontSize = '15px';
+        title.textContent = 'Carte de fidélité';
+        const desc = document.createElement('div');
+        desc.className = 'muted-light';
+        desc.style.marginTop = '4px';
+        desc.textContent = booking.loyaltyDiscount > 0 && booking.status !== 'Annulé'
+          ? '🎁 Une récompense fidélité est appliquée sur ce rendez-vous.'
+          : (loyalty.remaining === 1
+              ? 'Plus qu’un detailing terminé avant votre prochaine récompense.'
+              : 'Progression : ' + (loyalty.progress || 0) + ' / ' + (loyalty.cycle || 20) + '.');
+
+        const dots = document.createElement('div');
+        dots.className = 'loyalty-dots';
+        const cycle = loyalty.cycle || 20;
+        const progress = loyalty.progress || 0;
+        for (let i = 1; i <= cycle; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'loyalty-dot' + (i <= progress ? ' done' : '') + (i === cycle ? ' gift' : '');
+          dot.textContent = i === cycle ? '🎁' : i;
+          dots.appendChild(dot);
+        }
+        card.append(title, desc, dots);
+        host.appendChild(card);
+      }
+
+      function updateSummary() {
+        $('summaryService').textContent = state.service ? state.service.name : 'À choisir';
+        const summaryExtras = [...state.optionNames];
+        if (state.regularity) {
+          const labels = { '1w':'Entretien régulier : chaque semaine', '2w':'Entretien régulier : toutes les 2 semaines', '3w':'Entretien régulier : toutes les 3 semaines' };
+          summaryExtras.push(labels[state.regularity] || 'Entretien régulier');
+        }
+        $('summaryOptions').textContent = summaryExtras.length ? summaryExtras.join(', ') : 'Aucune';
+        $('summaryDate').textContent = els.date.value ? formatDateFr(els.date.value) : '—';
+        $('summaryTime').textContent = state.selectedTime || '—';
+
+        if (!state.service) {
+          $('summaryPrice').textContent = '—';
+          $('summaryDuration').textContent = '—';
+        } else {
+          const totals = currentTotals();
+          const displayedPrice = state.benefits ? Number(state.benefits.finalPrice || totals.price) : totals.price;
+          $('summaryPrice').textContent = formatMoney(displayedPrice);
+          $('summaryDuration').textContent = formatDuration(totals.durationHours);
+        }
+
+        const paymentNotice = $('summaryPayment');
+        if (state.service && state.config && state.config.payment && state.config.payment.enabled) {
+          const totals = currentTotals();
+          const payablePrice = state.benefits ? Number(state.benefits.finalPrice || totals.price) : totals.price;
+          const deposit = calculateClientDeposit(payablePrice);
+          const provider = state.config.payment.provider || 'Revolut';
+          paymentNotice.textContent = (state.config.payment.text || 'Un acompte est demandé pour confirmer le créneau.') +
+            ' Acompte : ' + formatMoney(deposit) +
+            (provider === 'Démo'
+              ? ' • MODE DÉMO : aucun argent ne sera débité.'
+              : ' • le paiement sécurisé Revolut s’affichera après validation.');
+          paymentNotice.classList.remove('hidden');
+        } else {
+          paymentNotice.classList.add('hidden');
+          paymentNotice.textContent = '';
+        }
+        updateSubmitState();
+      }
+
+      function currentTotals() {
+        if (!state.service) return { price: 0, durationHours: 0 };
+        const options = (state.config.options || []).filter(x => state.optionNames.has(x.name));
+        return {
+          price: round2(state.service.price + options.reduce((s, x) => s + Number(x.price || 0), 0)),
+          durationHours: round2(state.service.durationHours + options.reduce((s, x) => s + Number(x.durationHours || 0), 0))
+        };
+      }
+
+      function updateSubmitState() {
+        const requiredIds = ['firstName','lastName','phone','email','vehicle','commune','address'];
+        const fieldsReady = requiredIds.every(id => $(id).value.trim());
+        const email = $('email').value.trim();
+        const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const phoneValid = $('phone').value.replace(/\D/g, '').length >= 8;
+
+        els.submitBtn.disabled = !(
+          state.service &&
+          els.date.value &&
+          state.selectedTime &&
+          fieldsReady &&
+          emailValid &&
+          phoneValid &&
+          els.terms.checked &&
+          !state.loadingSlots &&
+          !state.submitting
+        );
+      }
+
+      function validateClientSide() {
+        if (!state.service) return 'Choisissez une formule.';
+        if (!$('firstName').value.trim()) return 'Indiquez votre prénom.';
+        if (!$('lastName').value.trim()) return 'Indiquez votre nom.';
+        if ($('phone').value.replace(/\D/g, '').length < 8) return 'Indiquez un numéro de téléphone valide.';
+        if (!$('email').value.trim()) return 'Indiquez votre e-mail pour recevoir la confirmation et le rappel.';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('email').value.trim())) return 'L’adresse e-mail semble incorrecte.';
+        if (!$('vehicle').value.trim()) return 'Indiquez le véhicule.';
+        if (!$('commune').value.trim()) return 'Indiquez la commune.';
+        if (!$('address').value.trim()) return 'Indiquez l’adresse.';
+        if (!els.date.value) return 'Choisissez une date.';
+        if (!state.selectedTime) return 'Choisissez un créneau.';
+        if (!els.terms.checked) return 'Confirmez les informations avant de réserver.';
+        return '';
+      }
+
+      function setContactInfo() {
+        $('contactInfo').textContent = contactText();
+      }
+
+      function contactText() {
+        if (!state.config) return '';
+        return [state.config.phone, state.config.instagram].filter(Boolean).join(' • ');
+      }
+
+      function showError(message) {
+        els.formError.textContent = message;
+        els.formError.classList.add('show');
+      }
+
+      function showSideError(message) {
+        els.sideError.textContent = message;
+        els.sideError.classList.add('show');
+      }
+
+      function hideErrors() {
+        els.formError.classList.remove('show');
+        els.sideError.classList.remove('show');
+      }
+
+      function showFatal(message) {
+        els.loading.classList.add('hidden');
+        els.closed.classList.remove('hidden');
+        $('closedText').textContent = message || 'La page de réservation est momentanément indisponible.';
+      }
+
+      function formatMoney(value) {
+        const n = Number(value || 0);
+        return new Intl.NumberFormat('fr-BE', { style: 'currency', currency: 'EUR' }).format(n);
+      }
+
+      function formatDuration(hours) {
+        const total = Math.round(Number(hours || 0) * 60);
+        const h = Math.floor(total / 60);
+        const m = total % 60;
+        if (!h) return m + ' min';
+        if (!m) return h + ' h';
+        return h + ' h ' + String(m).padStart(2, '0');
+      }
+
+      function formatDateFr(ymd) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(ymd || '')) return ymd || '—';
+        const [y, m, d] = ymd.split('-').map(Number);
+        const date = new Date(Date.UTC(y, m - 1, d));
+        return new Intl.DateTimeFormat('fr-BE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(date);
+      }
+
+      function round2(value) {
+        return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+      }
+
+      boot();
+    })();
+  </script>
+</body>
+</html>
